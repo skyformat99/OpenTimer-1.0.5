@@ -1,0 +1,176 @@
+TODO: 
+	* Dynamically determined the thread storage instead of hard-code it through macro.
+
+2016/03/? Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Fixed a bug in multi-threading in Timer constructor (OT_MAX_NUM_THREADS).
+	* Added several ostream methods to LUTTemplate, TimingLUT, Timing, Cell, and Cellpin classes.
+	* Added static functions for string conversion for Cellpin, and Timing class.
+	* Removed explicit string constructor in LOG if it can be automatically deduced by compiler.
+	* Modified the example file s27.cpp to remove logic error.
+	* Modified the ot_dictionary.h and added variadic template for constructor.
+	* Modified the ot_list.h and ot_orderedset.h.
+
+2016/02/11 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added is_leaf, is_root, num_fanins, num_fanouts, etc. for rctree_node class.
+	* Added estimate_delay and estimate_slew functions in rctree_node class.
+	* Added upstream resistance routines in rctree_node class.
+	* Added several cellpin parsing functions/procedures in ot_celllib.{cpp, h}.
+	* Added has_primary_input and has_primary_output in ot_net.{cpp, h}.
+	* Modified the ot_tokenizer.{cpp, h} and replaced several members with string.
+	* Modified ot_celllib.{cpp, h}, removed bugs in TimingArc structure.
+	* Fixed a bug on generating the clock tree.
+	* Removed is_sequential function in ot_pin.cpp and ot_node.cpp.
+	* Modified ot_celllib.{cpp, h}, wrapped functions from Timing classes.
+	* Removed LOG enum definition in ot_enumdef.{cpp, h}.
+	* Added nextstate_type attributed in celllib and enumdef.
+	* Removed a bunch of routines in ot_iterator.{cpp, h}.
+	* Renamed tokenizer to freader (file reader).
+	* Modified several enum definitions to c++ 11 class enum definition.
+	* Removed functions and replaced with in-code lambda expression.
+	* Removed OT_ASSERT macro and replaced with CHECK module.
+	* Added clean-version getcwd function and realpath function in ot_environment.h
+	* Added is_clock_tree_leaf function in ot_node.{cpp, h}.
+	* Modified ot_timer.{cpp, h} to incude jump along the clock tree.
+	* Modified __to_numeric function in ot_utility.{cpp, h} with c++ catch.
+	* Created Utility class.
+	* Enabled color logging flag.
+	* Added exception logging in _init_io_timing procedure.
+	* Moved enable_rc_timing_update to net class (in control of net class).
+	* Fixed a bug on set_load in which the RC tree won't be updated.
+	* OpenTimer-1.0.4 released.
+
+2016/01/31 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Modified "ot_typedef.h", added more aliases.
+	* Integrated google logging library (GLOG) into the 3rd-party library.
+	* Added parse tau2016 command function in "ot_environment.{cpp, h}"
+	* Removed conf objecti in "ot_environment.{cpp, h}"
+	* Added abstraction definition in "ot_typedef.h" and "ot_classdef.h"
+	* Replaced the package version with the macro "PACKAGE_VERSION".
+	* Added deep copy assignment to Timing and TimingLUT classes.
+	* Replaced NULL with nullptr through c++ 11.
+	* Changed logging methods to google logging library (glog-0.3.3).
+	* Removed set_verbose method.
+	* Added report_slew, set_at, set_rat, set_slew, and set_load in "ot_shell.cpp".
+	* Added copy constructor for Timing, TimingLUT, and TimingLUTTemplate.
+	* Modified _init_io_timing in "ot_timer.cpp".
+	* Renamed lcap with load across all files.
+	* Removed all functions and definition in "ot_global.{cpp, h}"
+	* Modified the dictionary template to be range loopable (with c++ 11).
+	* Modified the OrderedSet template to be range loopable (with c++ 11).
+	* Modified the List template to be range loopable (with c++ 11).
+	* Added report_slew, set_at, set_rat, set_slew, and set_load in "ot_timer.cpp".
+	* Modified the iterator structure of OrderedSet to return pointer.
+	* Added undefined_{at, rat, slew, slack} in utility class.
+
+2016/01/18 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added procedures to output a celllib in "ot_celllib.cpp" and "ot_celllib.h".
+	* Renamed the "shell_functions" to "shell_reactors".
+	* Added write celllib procedure in "ot_timer.cpp" and "ot_timer.h".
+	* Added report_slew to shell reactors.
+
+2015/12/19 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added memory pool "ot_allocator" to generic folder.
+	* Override operator new and operator delete for pin, gate, net, node, and edge.
+
+2015/11/26 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added several iterator functions.
+	* Modified macro definitions for OT_LOG, OT_WARN, and OT_ERROR.
+
+2015/11/19 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Fixed warning error in "ot_log_info.cpp" and "ot_log_error.cpp"
+	* Moved 3rd LEF/DEF to convenience library (noinst_libraries). 
+	* Added several functions/procedures in "ot_log_error.h" and "ot_log_info.h".
+	* Added "slew" function in "ot_timer.h" and "ot_timer.cpp" to print slew.
+
+2015/10/05 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added "ot_log_error.h" and "ot_log_error.cpp".
+	* Added "_report_at", "_report_slack", "_report_slack" to timer.
+	* Added "src/iterator" and moved iterator sources there.
+	* Added "src/spef" and moved spef sources there.
+	* Added tail string for info/earn/error output verbosity.
+	* Replaced pointers with unique_ptr in liberty class.
+	* Replaced spef parser with tokenizer class.
+	* Added macro for application-level logging.
+
+2015/09/21 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Version 1.0.0 released!
+	* Added "ot_tokenizer.cpp" and "ot_tokenizer.h" for text parser.
+	* Added "src/generic" for generic sources.
+	* Added "ot_tokenizer.cpp" and "ot_tokenizer.h" for text parser.
+	* Changed the build environment with Autotool.
+	* Added "src/verilog/" and "src/liberty/".
+
+2015/09/02 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Modified the data structure of OpenTimer shell commands. 
+	* Added unordered_map for the mapping between command keyword and function.
+	* Added set_load operation in "ot_timer.cpp" for runtime modification of the load in PO.
+
+2015/08/15 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Fixed a bug in full timing update. The timing at zero-fanin nodes are kept.
+	* Added several procedures/functions for OpenTimer shell.
+
+2015/07/31 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Modified path attribute. Paths starting with zero fanin counts for a complete path.
+	* Added a simple shell program for interactive execution.
+	* Added a few procedures for OpenTimer shell.
+
+2015/07/18 Tsung-Wei Huang <twh760812@gmail.com>
+	* Added Log information for runtime information.
+
+2015/07/05 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added several procedures/functions in SDC probject.
+	* Added several procedures/functions for command specification.
+
+2015/06/30 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added a procedure "splice_driver" in "ot_timer.cpp" for changing PI to driver.
+
+2015/06/20 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Fixed a bug in reading .spef file. Avoid missing section.
+
+2015/06/11 Tsung-Wei Huang <twh760812@gmail.com>
+	* Replaced the min-max priority queue with max queue for path tracing.
+	* Enabled the lazy evaluation for report_tns and report_wns.
+
+2015/05/27 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Fixed "_update_spef" where multiple threads insert nodes to the pipeline.
+	* Updated several callback functions/procedures in "ot_lefreader.cpp".
+	* Updated several callback functions/procedures in "ot_defreader.cpp".
+	* Replaced the name "instance" with "gate" across the entire projects.
+	* Modified the thread black in the function "_init_timer" of the file "ot_timer.cpp".
+	* Changed slew propagation in RC network, avoiding negative slew value. 
+	* Modified the dictionary template with a default constructor for key.
+
+2015/05/24 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Added a template makefile "template.mk" under the folder code/ for all code projects.
+	* Created Debug/ under code/ for debugging routines.
+
+2015/05/19 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Removed "fgets_unlocked" and "fgetc_unlocked" from utility file to avoid thread error.
+
+2015/05/12 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Integrated the LEF parser from OpenEDA (see license in the corresponding folder).
+	* Integrated the DEF parser from OpenEDA (see license in the corresponding folder).
+
+2015/05/01 Tsung-Wei Huang <twh760812@gmail.com>
+
+	* Renamed project to OpenTimer. 
+

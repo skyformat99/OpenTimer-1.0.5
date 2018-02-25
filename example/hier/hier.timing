@@ -1,0 +1,7 @@
+clock CLKIN 50 50
+at CLKIN 0 25 0 25
+at DATA1 0 0 1 1
+slew CLKIN 10 15 20 25
+slew DATA1 30 30 40 40
+load DOUT1 4
+rat DOUT1 10 10 20 20

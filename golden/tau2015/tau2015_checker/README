@@ -1,0 +1,160 @@
+# ----------------------------------------------------------------------------------
+# output file (golden vs. contestant) comparer
+# ----------------------------------------------------------------------------------
+
+================================= Usage =======================================
+
+# Usage: ./goldenFileChecker_release.pl <ops file> <golden output> <your output> [optional flags]
+
+REQUIRED inputs < >:
+(1) <.ops file>                   : the operations file used to generate goldens
+(2) <golden output file>          : everything in this file is required to be other
+(3) <contestant output file>      : to be compared against golden
+OPTIONAL inputs (must be after required arguments) [ ]:
+  -print_all_values               : prints all parsed at, rat, slack values
+                                  : (default is OFF)
+  -print_all_paths                : prints all parsed paths
+                                  : (default is OFF)
+  -print_detailed_value_accuracy  : reports all mismatched rat, at, slack values
+                                  : (default is OFF)
+  -print_detailed_path_accuracy   : reports all missing paths and paths with mismatched slacks
+                                  : (default is OFF)
+
+## Recommended usage: ##
+./goldenFileChecker_release.pl <ops file> <golden output> <your output> -print_detailed_value_accuracy -print_detailed_path_accuracy
+
+## This will report all values and paths that did not receive full accuracy scores.
+## -print_all_values and -print_all_paths are used primarily for data debugging 
+##   be prepared for a lot of data if you use these options.
+
+================================== Description ================================
+
+Description: This is a preliminary (simplified) version of an evaluation script 
+to compare your output with the golden. The details of the scoring is found in 
+the comment header in the script, and is subject to change. 
+This script does 2 things:
+
+1) It does a hard difference comparison between the golden's and your 
+rat/at/slack value. Slack values that are positive in the golden and your 
+file are given full credit. We realize that in some cases, where if the slack 
+is positive by different amounts, the RAT can be affected differently.
+During evaluation, we will account for this. This checker *does not* 
+account for this.
+
+2) It tries to match all paths in golden to your output. If a path is found 
+in the golden but is not in your file, you will be penalized. If a path is 
+found in your output but not in the golden, you will not be penalized.
+
+=============================== Accuracy Evaluation ===========================
+
+$accuracyThresholdH = 0.1;
+$accuracyThresholdM = 0.5;
+$accuracyThresholdL = 1.0;
+
+$accuracyScoreH     = 1;
+$accuracyScoreM     = 0.8;
+$accuracyScoreL     = 0.5;
+$accuracyScoreZero  = 0;
+
+
+For each rat/at/slack:
+  abs(diff) ~ [0.0, $accuracyThresholdH]                    ps => $accuracyScoreH
+  abs(diff) ~ ($accuracyThresholdH, $accuracyThresholdM]    ps => $accuracyScoreM
+  abs(diff) ~ ($accuracyThresholdM, $accuracyThresholdL]    ps => $accuracyScoreL
+  abs(diff) ~ ($accuracyThresholdL, \infinity)              ps => $accuracyScoreZero
+Note: Full credit if both slack values are positive
+#-----------------------------------------------------#
+# For each path: if path found, then match slack as above criteria.
+
+
+==================== What is Required by Your Output =========================
+
+A note on what is required from your output: your output *must* produce valid 
+(but not necessarily) correct output for *every* command in the .ops file. 
+If you are interested in using this script to compare partial scores, 
+consider the following "dummy" outputs:
+
+          Ops File Command                 -->          Your output
+-------------------------------------------------------------------------------
+report_at / report_slack / report_rat      -->              0.0
+report_worst_paths                         -->     report_worst_paths 0
+
+This will enable the script to continue parsing, even if some commands are not 
+working properly.
+
+====================== How to Interpret the Output ===========================
+
+By default, it will print two values:
+
+======================================================================
+VALUE ACCURACY: Average of 23808 data points is 100.00000 (raw sum = 23808)
+======================================================================
+======================================================================
+PATH ACCURACY: Average of 21 paths is 81.0000 (raw sum of 17)
+======================================================================
+
+VALUE ACCURACY is your accuracy score across all report_at / report_slack
+/ report_rat queries in the .ops file. PATH ACCURACY is your accuracy 
+score across all report_worst_paths queries.
+
+The format is "Average of <total queries> [data points / paths] is 
+<raw accuracy score> / <total queries> (raw sum = <raw accuracy score>).
+The <raw accuracy score> is computed based on the accuracy protocol 
+described above.
+
+
+If -print_all_values is enabled:
+
+Format is: Ops line [.ops line #]:: <command> :: Golden line [golden line #] = <golden value> vs. Contestant line [contestant line #] = <contestant value>
+
+Example:
+Ops line [1]:: report_at -pin d_6 :: Golden line [1] = 33.000 vs. Contestant line [1] = 33.000
+
+If -print_all_paths is enabled:
+
+Format is: Ops line [.ops line #]:: <command> :: [Golden / Contestant] paths <path> <slack>
+Each path listed is <path type> <mode> <node / transition> ... <slack>
+
+Example:
+
+Ops line [15021]:: report_worst_paths -numPaths 3 :: Golden paths <path> <slack>
+path = RAT L crc32N_28 F g35:o F g35:a R make_crc32d16_crc_reg_3_:Q R make_crc32d16_crc_reg_3_:CK R newInst_188:o R newInst_188:a F newInst_187:o F newInst_187:a R newInst_186:o R newInst_186:a F newInst_185:o F newInst_185:a R newInst_184:o R newInst_184:a F newInst_183:o F newInst_183:a R newInst_182:o R newInst_182:a F newInst_181:o F newInst_181:a R newInst_180:o R newInst_180:a F newInst_166:o F newInst_166:a R newInst_165:o R newInst_165:a F newInst_164:o F newInst_164:a R newInst_163:o R newInst_163:a F newInst_162:o F newInst_162:a R newInst_161:o R newInst_161:a F newInst_160:o F newInst_160:a R newInst_140:o R newInst_140:a F newInst_139:o F newInst_139:a R newInst_138:o R newInst_138:a F newInst_137:o F newInst_137:a R newInst_136:o R newInst_136:a F newInst_135:o F newInst_135:a R newInst_134:o R newInst_134:a F newInst_108:o F newInst_108:a R newInst_107:o R newInst_107:a F newInst_106:o F newInst_106:a R newInst_105:o R newInst_105:a F newInst_104:o F newInst_104:a R newInst_103:o R newInst_103:a F newInst_102:o F newInst_102:a R newInst_71:o R newInst_71:a F newInst_70:o F newInst_70:a R newInst_69:o R newInst_69:a F newInst_68:o F newInst_68:a R newInst_67:o R newInst_67:a F newInst_66:o F newInst_66:a R newInst_65:o R newInst_65:a F newInst_64:o F newInst_64:a R newInst_63:o R newInst_63:a F newInst_7:o F newInst_7:a R newInst_6:o R newInst_6:a F newInst_5:o F newInst_5:a R newInst_4:o R newInst_4:a F newInst_3:o F newInst_3:a R newInst_2:o R newInst_2:a F newInst_1:o F newInst_1:a R newInst_0:o R newInst_0:a F tau_clk F, slack = -1918.146
+path = RAT L crc32N_28 R g35:o R g35:a F make_crc32d16_crc_reg_3_:Q F make_crc32d16_crc_reg_3_:CK R newInst_188:o R newInst_188:a F newInst_187:o F newInst_187:a R newInst_186:o R newInst_186:a F newInst_185:o F newInst_185:a R newInst_184:o R newInst_184:a F newInst_183:o F newInst_183:a R newInst_182:o R newInst_182:a F newInst_181:o F newInst_181:a R newInst_180:o R newInst_180:a F newInst_166:o F newInst_166:a R newInst_165:o R newInst_165:a F newInst_164:o F newInst_164:a R newInst_163:o R newInst_163:a F newInst_162:o F newInst_162:a R newInst_161:o R newInst_161:a F newInst_160:o F newInst_160:a R newInst_140:o R newInst_140:a F newInst_139:o F newInst_139:a R newInst_138:o R newInst_138:a F newInst_137:o F newInst_137:a R newInst_136:o R newInst_136:a F newInst_135:o F newInst_135:a R newInst_134:o R newInst_134:a F newInst_108:o F newInst_108:a R newInst_107:o R newInst_107:a F newInst_106:o F newInst_106:a R newInst_105:o R newInst_105:a F newInst_104:o F newInst_104:a R newInst_103:o R newInst_103:a F newInst_102:o F newInst_102:a R newInst_71:o R newInst_71:a F newInst_70:o F newInst_70:a R newInst_69:o R newInst_69:a F newInst_68:o F newInst_68:a R newInst_67:o R newInst_67:a F newInst_66:o F newInst_66:a R newInst_65:o R newInst_65:a F newInst_64:o F newInst_64:a R newInst_63:o R newInst_63:a F newInst_7:o F newInst_7:a R newInst_6:o R newInst_6:a F newInst_5:o F newInst_5:a R newInst_4:o R newInst_4:a F newInst_3:o F newInst_3:a R newInst_2:o R newInst_2:a F newInst_1:o F newInst_1:a R newInst_0:o R newInst_0:a F tau_clk F, slack = -1918.146
+path = RAT L crc32N_17 R g62:o R g62:a F make_crc32d16_crc_reg_14_:Q F make_crc32d16_crc_reg_14_:CK R newInst_169:o R newInst_169:a F newInst_168:o F newInst_168:a R newInst_167:o R newInst_167:a F newInst_166:o F newInst_166:a R newInst_165:o R newInst_165:a F newInst_164:o F newInst_164:a R newInst_163:o R newInst_163:a F newInst_162:o F newInst_162:a R newInst_161:o R newInst_161:a F newInst_160:o F newInst_160:a R newInst_140:o R newInst_140:a F newInst_139:o F newInst_139:a R newInst_138:o R newInst_138:a F newInst_137:o F newInst_137:a R newInst_136:o R newInst_136:a F newInst_135:o F newInst_135:a R newInst_134:o R newInst_134:a F newInst_108:o F newInst_108:a R newInst_107:o R newInst_107:a F newInst_106:o F newInst_106:a R newInst_105:o R newInst_105:a F newInst_104:o F newInst_104:a R newInst_103:o R newInst_103:a F newInst_102:o F newInst_102:a R newInst_71:o R newInst_71:a F newInst_70:o F newInst_70:a R newInst_69:o R newInst_69:a F newInst_68:o F newInst_68:a R newInst_67:o R newInst_67:a F newInst_66:o F newInst_66:a R newInst_65:o R newInst_65:a F newInst_64:o F newInst_64:a R newInst_63:o R newInst_63:a F newInst_7:o F newInst_7:a R newInst_6:o R newInst_6:a F newInst_5:o F newInst_5:a R newInst_4:o R newInst_4:a F newInst_3:o F newInst_3:a R newInst_2:o R newInst_2:a F newInst_1:o F newInst_1:a R newInst_0:o R newInst_0:a F tau_clk F, slack = -1752.523
+
+If -print_detailed_value_accuracy is enabled:
+
+A table will be printed with the breakdown of the different accuracy scores you received:
+
+===================================================================
+High accuracy: 91752 of 140736 (65.19441)
+Mid  accuracy: 8916 of 140736 (6.33527)
+Low  accuracy: 10494 of 140736 (7.45651)
+No accuracy:   29574 of 140736 (21.01381)
+===================================================================
+
+For each non-high accuracy section, it will print all the commands that
+did not match. For each section, the accuracy is based on the 
+protocol above.
+
+Format is: Ops [.ops line #]:: <command> :: Golden [golden line #] = <golden value> vs. Contestant [contestant line #] = <contestant value> (diff = <difference>)
+
+Example:
+
+Mid-accuracy values: rat / at / slack that are between (0.1, 0.5] picoseconds
+Ops [100048]:: report_at -pin TAUGATE_242:a :: Golden [98613] = 3132.174 vs. Contestant [98578] = 3131.834 (diff = 0.34000)
+...
+
+
+If -print_detailed_path_accuracy is enabled:
+
+For each path that did not receive high accuracy, it will print the path and the slack mismatch.
+It will also print out each path that is in the golden but not your file.
+
+Format is: Ops line [.ops line #]:: <command> :: golden slack = <golden value> vs. contestant slack = <contestant value> (diff = <difference>)
+--> <path type> <path mode> <node transition> ...
+
+Example:
+Path slack difference mismatch between (0.1, 0.5] picoseconds
+Ops line [104567]:: report_worst_paths -numPaths 3 :: golden slack = -6815.459 vs. contestant slack = -6815.249 (diff = 0.21000) [path follows] <type> <mode> <node transition>)
+--> RAT L crc32N_28 F TAUGATE_287:o F TAUGATE_287:a R TAUGATE_57:o R TAUGATE_57:a F TAUGATE_215:o F TAUGATE_215:a R g35:o R g35:a F TAUGATE_187:o F TAUGATE_187:a R make_crc32d16_crc_reg_3_:Q R make_crc32d16_crc_reg_3_:CK R newInst_188:o R newInst_188:a F newInst_187:o F newInst_187:a R newInst_186:o R newInst_186:a F newInst_185:o F newInst_185:a R newInst_184:o R newInst_184:a F newInst_183:o F newInst_183:a R newInst_182:o R newInst_182:a F newInst_181:o F newInst_181:a R newInst_180:o R newInst_180:a F newInst_166:o F newInst_166:a R newInst_165:o R newInst_165:a F newInst_164:o F newInst_164:a R newInst_163:o R newInst_163:a F newInst_162:o F newInst_162:a R newInst_161:o R newInst_161:a F newInst_160:o F newInst_160:a R newInst_140:o R newInst_140:a F newInst_139:o F newInst_139:a R newInst_138:o R newInst_138:a F newInst_137:o F newInst_137:a R newInst_136:o R newInst_136:a F newInst_135:o F newInst_135:a R newInst_134:o R newInst_134:a F newInst_108:o F newInst_108:a R newInst_107:o R newInst_107:a F newInst_106:o F newInst_106:a R newInst_105:o R newInst_105:a F newInst_104:o F newInst_104:a R newInst_103:o R newInst_103:a F newInst_102:o F newInst_102:a R newInst_71:o R newInst_71:a F newInst_70:o F newInst_70:a R newInst_69:o R newInst_69:a F newInst_68:o F newInst_68:a R newInst_67:o R newInst_67:a F newInst_66:o F newInst_66:a R newInst_65:o R newInst_65:a F newInst_64:o F newInst_64:a R newInst_63:o R newInst_63:a F newInst_7:o F newInst_7:a R newInst_6:o R newInst_6:a F newInst_5:o F newInst_5:a R newInst_4:o R newInst_4:a F newInst_3:o F newInst_3:a R newInst_2:o R newInst_2:a F newInst_1:o F newInst_1:a R newInst_0:o R newInst_0:a F tau_clk F

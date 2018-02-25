@@ -1,0 +1,115 @@
+  ____              _______              
+ / __ \___  ___ ___/_  __(_)_ _  ___ ____
+/ /_/ / _ \/ -_) _ \/ / / /  ' \/ -_) __/
+\____/ .__/\__/_//_/_/ /_/_/_/_/\__/_/      
+    /_/ 
+
+CONTENTS OF THIS FILE
+---------------------
+ * Introduction
+ * Building
+ * Regression
+ * Project tree
+ * Maintainers
+
+
+INTRODUCTION
+------------
+OpenTimer is an open-source high-performance timing analysis tool developed by Tsung-Wei Huang and
+Prof. Martin D. F. Wong in the University of Illinois at Urbana-Champaign (UIUC), IL, USA. Evolving
+from its previous generation UI-Timer 1.0 and UI-Timer 2.0, OpenTimer works on industrial formats 
+(.v, .spef, .lib, .sdc, .lef, .def), and supports important features such as block-based analysis, 
+path-based analysis, cppr, incremental timing, and multi-threading. OpenTimer is extremely fast by 
+its elegant data structure and algorithm which can efficiently and accurately analyze large-scale 
+designs. Also, its user-friendly APIs enable seamless collaboration with optimization tools and thus 
+can greatly speed up the timing closure. Most importantly OpenTimer is open-source!
+
+Visit website for more information about OpenTimer! http://web.engr.illinois.edu/~thuang19
+
+
+BUILDING
+--------
+OpenTimer is highly self-contained, with very few dependences on other projects. It is written in
+C++ language and mainly works on a linux system with a GCC compiler (better with version 4.4 or 
+higher). OpenTimer is built using well-known GNU Autotool (e.g., Autoconf and Automake) in 
+open source community. In order to build the OpenTimer, please follow the standard Autotool flow.
+
+ * ~$: ./configure
+ * ~$: make
+ * ~$: sudo make install (optional)
+
+A successful build produces an executable binary "OpenTimer" in the top folder, as well as a set
+of shared libraries in the folder ./lib. 
+
+
+REGRESSION
+----------
+Regression goes through the benchmarks released from TAU 2015 contest and perform verification on 
+the timing results in comparison to pre-generated golden reference. This is particularly helpful 
+for ensuring the code integrity and correctness especially after developments that modify the source 
+codes. 
+
+ * ~$: make regression
+
+By default, the accuracy values from the regression should be all 100.
+
+
+PROJECT TREE
+------------
+OpenTimer/
+ - inc/
+ - lib/
+ - src/
+    - debug/
+    - dump/
+    - log/
+    - sdc/
+    - shell/
+    - timer/
+    - generic/
+    - verilog/
+    - liberty/
+    - iterator/
+    - spef/
+ - main/
+ - test/
+ - regression/
+ - 3rd-party/
+    - LEF/ 
+    - DEF/ 
+ - golden/
+ - example
+ - README
+ - LICENSE
+ - Makefile.am
+ - configure.ac
+
+Source codes of OpenTimer are divided into different categories under the src/ folder. In order
+to handle physical design file LEF/DEF reliably, we integrated the open-source LEF/DEF parser
+from OpenEDA community (www.si2.org) into the OpenTimer.
+
+ * LEF/ and DEF/: Codes for parsing .lef and .def files.
+ * sdc/         : Codes for parsing .sdc files.
+ * generic/     : Codes for generic definition files.
+ * timer/       : Codes for core timing analysis.
+ * debug/       : Codes for debugging.
+ * dump/        : Codes for information dumping.
+ * log/         : Codes for runtime logging.
+ * shell/       : Codes for OpenTimer shell.
+ * verilog/     : Codes for verilog parser.
+ * liberty/     : Codes for liberty parser.
+ * iterator/    : Codes for iterator.
+ * spef/        : Codes for parasitics.
+
+The directory golden/ stores the golden timing reference which is pre-generated based on TAU 2015
+contest. Several example files are placed in the folder example/ which help users to understand
+the usage of OpenTimer.
+
+
+MAINTAINERS
+-----------
+Current maintainers:
+ * Tsung-Wei Huang
+
+Please report any bugs to Tsung-Wei Huang via twh760812@gmail.com 
+

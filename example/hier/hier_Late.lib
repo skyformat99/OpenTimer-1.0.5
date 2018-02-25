@@ -1,0 +1,326 @@
+library (TOP) {
+  delay_model : table_lookup;
+
+  time_unit : "1ps";
+  voltage_unit : "1V";
+  current_unit : "1mA";
+  capacitive_load_unit(1, ff);
+  leakage_power_unit      : "1uW";
+  pulling_resistance_unit : "1kohm";
+
+  input_threshold_pct_rise : 50;
+  input_threshold_pct_fall : 50;
+  output_threshold_pct_rise : 50;
+  output_threshold_pct_fall : 50;
+  slew_upper_threshold_pct_rise : 90;
+  slew_lower_threshold_pct_rise : 10;
+  slew_upper_threshold_pct_fall : 90;
+  slew_lower_threshold_pct_fall : 10;
+  nom_process     :  1.0;
+  nom_temperature :  50.0;
+  nom_voltage     :  0.700;
+
+  operating_conditions(TOP) {
+    process     :  1.0;
+    temperature :  50.0;
+    voltage     :  0.700;
+  }
+  default_operating_conditions : TOP;
+
+  lu_table_template (delay_slew_load_2x3) {
+    variable_1 : input_net_transition;
+    index_1 ("1, 2");
+    variable_2 : total_output_net_capacitance;
+    index_2 ("1, 2, 3");
+  }
+  lu_table_template (delay_slew_load_6x1) {
+    variable_1 : input_net_transition;
+    index_1 ("1, 2, 3, 4, 5, 6");
+    variable_2 : total_output_net_capacitance;
+    index_2 ("1");
+  }
+  lu_table_template (delay_slew_load_6x2) {
+    variable_1 : input_net_transition;
+    index_1 ("1, 2, 3, 4, 5, 6");
+    variable_2 : total_output_net_capacitance;
+    index_2 ("1, 2");
+  }
+  lu_table_template (delay_slew_load_6x3) {
+    variable_1 : input_net_transition;
+    index_1 ("1, 2, 3, 4, 5, 6");
+    variable_2 : total_output_net_capacitance;
+    index_2 ("1, 2, 3");
+  }
+  lu_table_template (pulse_width_slew_4x1) {
+    variable_1 : constrained_pin_transition;
+    index_1 ("1, 2, 3, 4");
+  }
+  lu_table_template (setup_slew_slew_4x4) {
+    variable_1 : related_pin_transition;
+    index_1 ("1, 2, 3, 4");
+    variable_2 : constrained_pin_transition;
+    index_2 ("1, 2, 3, 4");
+  }
+
+cell(TOP) {
+  timing_model_type : abstracted;
+  pin ("CLKIN") {
+    direction : input;
+    max_transition : 400.236;
+    rise_capacitance : 792.8345;
+    fall_capacitance : 792.8345;
+    capacitance : 792.8345;
+
+  }
+  pin ("DATA1") {
+    direction : input;
+    max_transition : 400.236;
+    rise_capacitance : 792.8317;
+    fall_capacitance : 792.8317;
+    capacitance : 792.8317;
+  }
+  pin ("DOUT1") {
+    direction : output;
+    max_capacitance : 9.06351;
+    timing() {
+      related_pin : "GATE1_Q_X2";
+      timing_sense : positive_unate;
+      timing_type : combinational;
+      cell_fall (delay_slew_load_2x3) {
+        index_1 ("1.000000, 14.999999");
+        index_2 ("3.0000, 5.0000, 10.0000");
+        values ( \
+          "0.020345, 0.026176, 0.040756", \
+          "0.020345, 0.026176, 0.040756" \
+        );
+      }
+      fall_transition (delay_slew_load_6x2) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("3.0000, 10.0000");
+        values ( \
+          "1.000012, 1.000600", \
+          "3.000000, 3.000003", \
+          "4.500000, 4.500000", \
+          "5.500000, 5.500000", \
+          "10.000000, 10.000000", \
+          "14.999999, 14.999999" \
+        );
+      }
+      cell_rise (delay_slew_load_2x3) {
+        index_1 ("1.000000, 14.999999");
+        index_2 ("3.0000, 5.0000, 10.0000");
+        values ( \
+          "0.020345, 0.026176, 0.040756", \
+          "0.020345, 0.026176, 0.040756" \
+        );
+      }
+      rise_transition (delay_slew_load_6x2) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("3.0000, 10.0000");
+        values ( \
+          "1.000012, 1.000600", \
+          "3.000000, 3.000003", \
+          "4.500000, 4.500000", \
+          "5.500000, 5.500000", \
+          "10.000000, 10.000000", \
+          "14.999999, 14.999999" \
+        );
+      }
+    }
+  }
+  pin ("GATE1_CK_X6") {
+    direction : internal;
+    clock : true;
+    timing() {
+      related_pin : "CLKIN";
+      timing_sense : positive_unate;
+      timing_type : combinational;
+      cell_fall (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "9.187260", \
+          "9.241922", \
+          "9.318130", \
+          "9.385154", \
+          "9.826229", \
+          "10.407286" \
+        );
+      }
+      fall_transition (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "21.984524", \
+          "22.152027", \
+          "22.453348", \
+          "22.731878", \
+          "24.479843", \
+          "27.051077" \
+        );
+      }
+      cell_rise (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "9.187260", \
+          "9.241922", \
+          "9.318130", \
+          "9.385154", \
+          "9.826229", \
+          "10.407286" \
+        );
+      }
+      rise_transition (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "21.984524", \
+          "22.152027", \
+          "22.453348", \
+          "22.731878", \
+          "24.479843", \
+          "27.051077" \
+        );
+      }
+    }
+  }
+  pin ("GATE1_D_X7") {
+    direction : internal;
+    timing() {
+      related_pin : "DATA1";
+      timing_sense : positive_unate;
+      timing_type : combinational;
+      cell_fall (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "9.195148", \
+          "9.249744", \
+          "9.325864", \
+          "9.392809", \
+          "9.833392", \
+          "10.414660" \
+        );
+      }
+      fall_transition (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "22.001219", \
+          "22.168432", \
+          "22.469252", \
+          "22.747501", \
+          "24.494333", \
+          "27.064354" \
+        );
+      }
+      cell_rise (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "9.195148", \
+          "9.249744", \
+          "9.325864", \
+          "9.392809", \
+          "9.833392", \
+          "10.414660" \
+        );
+      }
+      rise_transition (delay_slew_load_6x1) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("1.0000");
+        values ( \
+          "22.001219", \
+          "22.168432", \
+          "22.469252", \
+          "22.747501", \
+          "24.494333", \
+          "27.064354" \
+        );
+      }
+    }
+    timing() {
+      related_pin : "GATE1_CK_X6";
+      timing_type : setup_rising;
+      fall_constraint (setup_slew_slew_4x4) {
+        index_1 ("100.000000, 110.000000, 120.200005, 150.000000");
+        index_2 ("100.000000, 110.000000, 120.200005, 150.000000");
+        values ( \
+          "23.552183, 26.997805, 30.512342, 40.780296", \
+          "19.832817, 23.297832, 26.832150, 37.157890", \
+          "16.039066, 19.523861, 23.078354, 33.463039", \
+          "4.955361, 8.497942, 12.111376, 22.668268" \
+        );
+      }
+      rise_constraint (setup_slew_slew_4x4) {
+        index_1 ("100.000000, 110.000000, 120.200005, 150.000000");
+        index_2 ("100.000000, 110.000000, 120.200005, 150.000000");
+        values ( \
+          "84.570290, 88.002815, 91.503983, 101.732887", \
+          "82.621529, 86.064171, 89.575661, 99.834709", \
+          "80.633789, 84.086754, 87.608765, 97.898575", \
+          "74.826469, 78.309578, 81.862358, 92.242012" \
+        );
+      }
+    }
+  }
+  pin ("GATE1_Q_X2") {
+    direction : internal;
+    timing() {
+      related_pin : "GATE1_CK_X6";
+      timing_sense : negative_unate;
+      timing_type : rising_edge;
+      cell_fall (delay_slew_load_6x3) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("3.0000, 5.0000, 10.0000");
+        values ( \
+          "274.396576, 290.448303, 330.532043", \
+          "275.409515, 291.460938, 331.543030", \
+          "276.169189, 292.220428, 332.301239", \
+          "276.677551, 292.728729, 332.809326", \
+          "278.967590, 295.018707, 335.099030", \
+          "281.512085, 297.563110, 337.643127" \
+        );
+      }
+      fall_transition (delay_slew_load_2x3) {
+        index_1 ("1.000000, 14.999999");
+        index_2 ("3.0000, 5.0000, 10.0000");
+        values ( \
+          "168.155228, 198.697708, 275.079468", \
+          "167.993011, 198.564636, 275.085541" \
+        );
+      }
+    }
+    timing() {
+      related_pin : "GATE1_CK_X6";
+      timing_sense : positive_unate;
+      timing_type : rising_edge;
+      cell_rise (delay_slew_load_6x3) {
+        index_1 ("1.000000, 3.000000, 4.500000, 5.500000, 10.000000, 14.999999");
+        index_2 ("3.0000, 5.0000, 10.0000");
+        values ( \
+          "218.483917, 233.194244, 269.945862", \
+          "219.482376, 234.192917, 270.944946", \
+          "220.231247, 234.941895, 271.694275", \
+          "220.745102, 235.455963, 272.208923", \
+          "223.075851, 237.787704, 274.543884", \
+          "225.665619, 240.378555, 277.138336" \
+        );
+      }
+      rise_transition (delay_slew_load_2x3) {
+        index_1 ("1.000000, 14.999999");
+        index_2 ("3.0000, 5.0000, 10.0000");
+        values ( \
+          "159.131241, 188.255447, 261.235321", \
+          "159.135712, 188.247559, 261.218323" \
+        );
+      }
+    }
+  }
+}
+}
+/* 
+  Part : TOP
+  generate_abstract command option : COREABSTRACT(TRUE) NOFLUSHSEGMENT(FALSE) MODELBOUNDARYSPICE(FALSE) SPLITENDOFCYCLETEST(FALSE) PREAMBLELEVEL(4) WRITEDCLABSTRACT(FALSE) WRITELIB(TRUE) OVERRIDE(FALSE) SLEWSENSPOINTS(1.0/1.0010001/1.0020002/5.5/10/3.000/3.00011/3.002001/3.002002/4.5/4.5000001/5.500001/15) TESTSLEWSENSPOINTS(100,120.2000,120.25,120.250001,150,110,110.002,110.001) LOADSENSPOINTS(3,5,10) ABSTRACTALLDELAYS(FALSE) WRITEABSTRACT(TRUE) VOLTTEMP(FALSE) ZEROCLOCKTREE(FALSE) SUPPRESSCOMPRESSION(TRUE) INCLUDEWIRECAP(TRUE) INCLUDEBOUNDARYRC(TRUE) RETAINTESTPOINTS(TRUE) SHORTPINNAME(FALSE) NETPINNAME(FALSE) NODESUFFIX(FALSE) FORCE_DATA_PATH(FALSE) TCL(FALSE) DELIMITER(|) MAXSLEWDERIVDEPTH(1) DERIVATIVECHECK(FALSE) RETAIN_CLOCK_TREE(FALSE) CUT_FLUSH_LOOPS(FALSE) LCD_COMPRESSION(TRUE) SLEWSENSMETHOD(PWCONNECT) LOADSENSMETHOD(PWCONNECT) PROJECTMAXSLEW(1000.000000) PROJECTMAXLOAD(1000.000000) KEEPDUMMYIONODES(FALSE) MULTIVOLTAUDIT(FALSE) ONLYPHASESWITHSLACKS(FALSE) BYPASSPHASEPAIREXCLUDES(FALSE) RETAINNODESTODEPTH(-1) COMPRESS_ACTIVE_CLOCK_TREE(TRUE) SUPPRESSSCAN(FALSE) SRULE(FALSE) FULL_STAT(TRUE) MARK_AUTO_LOOP_SNIP_SEGMENTS(FALSE) CAPTURE_PI_PARASITICS(FALSE) WRITE_INCREMENTAL_ABSTRACT(FALSE) RETAIN_INCREMENTAL_ABSTRACT(FALSE) 
+ */
