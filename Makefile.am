@@ -11,11 +11,6 @@
 #*                                                                            *
 #******************************************************************************/
 
-# Predefine variables.
-GLOG_HOME=3rd-party/glog-0.3.3
-GLOG_INC=$(GLOG_HOME)/src
-GLOG_LIB=$(GLOG_HOME)/libglog.la
-
 # Automake options.
 AUTOMAKE_OPTIONS = foreign
 
@@ -23,7 +18,6 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4 --install
 
 # Automake directories.
-SUBDIRS = $(GLOG_HOME) .
 
 # Package-related substitution variables.
 CXX = @CXX@
@@ -75,70 +69,58 @@ OT_CXXFLAGS += -Isrc/verilog
 OT_CXXFLAGS += -I3rd-party/LEF
 OT_CXXFLAGS += -I3rd-party/DEF
 
-# OpenTimer 3rd-party glog include flag
-OT_CXXFLAGS += -I$(GLOG_INC)
-
 # Program: bin/OpenTimer
 bin_PROGRAMS += bin/OpenTimer
 bin_OpenTimer_CXXFLAGS = $(OT_CXXFLAGS)
 bin_OpenTimer_LDADD = lib/libOpenTimer.la
-bin_OpenTimer_LDADD += $(GLOG_LIB)
 bin_OpenTimer_SOURCES = main/ot_main.cpp main/ot_main.h
 
 # Program: bin/OpenTimer-agent
 bin_PROGRAMS += bin/OpenTimer-agent
 bin_OpenTimer_agent_CXXFLAGS = $(OT_CXXFLAGS)
 bin_OpenTimer_agent_LDADD = lib/libOpenTimer.la
-bin_OpenTimer_agent_LDADD += $(GLOG_LIB)
 bin_OpenTimer_agent_SOURCES = main/ot_dist_agent.cpp main/ot_dist_agent.h
 
 # Program: bin/OpenTimer-master
 bin_PROGRAMS += bin/OpenTimer-master
 bin_OpenTimer_master_CXXFLAGS = $(OT_CXXFLAGS)
 bin_OpenTimer_master_LDADD = lib/libOpenTimer.la
-bin_OpenTimer_master_LDADD += $(GLOG_LIB)
 bin_OpenTimer_master_SOURCES = main/ot_dist_master.cpp main/ot_dist_master.h
 
 # Program: bin/OpenTimer-tau15
 noinst_PROGRAMS += bin/OpenTimer-tau15
 bin_OpenTimer_tau15_CXXFLAGS = $(OT_CXXFLAGS)
 bin_OpenTimer_tau15_LDADD = lib/libOpenTimer.la
-bin_OpenTimer_tau15_LDADD += $(GLOG_LIB)
 bin_OpenTimer_tau15_SOURCES = main/ot_tau15.cpp main/ot_tau15.h
 
 # Program: bin/OpenTimer-tau16
 noinst_PROGRAMS += bin/OpenTimer-tau16
 bin_OpenTimer_tau16_CXXFLAGS = $(OT_CXXFLAGS)
 bin_OpenTimer_tau16_LDADD = lib/libOpenTimer.la
-bin_OpenTimer_tau16_LDADD += $(GLOG_LIB)
 bin_OpenTimer_tau16_SOURCES = main/ot_tau16.cpp main/ot_tau16.h
 
 # Program: example/simple/simple
 noinst_PROGRAMS += example/simple/simple
 example_simple_simple_CXXFLAGS = $(OT_CXXFLAGS)
 example_simple_simple_LDADD = lib/libOpenTimer.la
-example_simple_simple_LDADD += $(GLOG_LIB)
 example_simple_simple_SOURCES = example/simple/simple.cpp
 
 # Program: example/c17/c17
 noinst_PROGRAMS += example/c17/c17
 example_c17_c17_CXXFLAGS = $(OT_CXXFLAGS)
 example_c17_c17_LDADD = lib/libOpenTimer.la
-example_c17_c17_LDADD += $(GLOG_LIB)
 example_c17_c17_SOURCES = example/c17/c17.cpp
 
 # Program: example/s27/s27
 noinst_PROGRAMS += example/s27/s27
 example_s27_s27_CXXFLAGS = $(OT_CXXFLAGS)
 example_s27_s27_LDADD = lib/libOpenTimer.la
-example_s27_s27_LDADD += $(GLOG_LIB)
 example_s27_s27_SOURCES = example/s27/s27.cpp
 
 # Library definition: lib/libOpenTimer.la
 lib_LTLIBRARIES += lib/libOpenTimer.la
 lib_libOpenTimer_la_CXXFLAGS = $(OT_CXXFLAGS)
 lib_libOpenTimer_la_LIBADD = lib/libLEF.la lib/libDEF.la
-lib_libOpenTimer_la_LIBADD += $(GLOG_LIB)
 lib_libOpenTimer_la_SOURCES =
 lib_libOpenTimer_la_SOURCES += src/debug/ot_debug_graph.cpp
 lib_libOpenTimer_la_SOURCES += src/verilog/ot_verilog.cpp

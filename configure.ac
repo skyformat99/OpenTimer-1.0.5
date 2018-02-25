@@ -42,7 +42,6 @@ AC_CONFIG_FILES([Makefile])
 #AC_CONFIG_HEADERS([inc/config.h])
 
 # Configure 3rd-party packages.
-AC_CONFIG_SUBDIRS([3rd-party/glog-0.3.3])
 
 # Language configuration.
 AC_LANG(C++)
