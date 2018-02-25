@@ -1,1 +1,8 @@
 autom4te.cache/
+.deps/
+Makefile
+config.log
+config.lt
+config.status
+libtool
+
