@@ -63,6 +63,9 @@ AC_CHECK_TYPE(uint16_t, ac_cv_have_uint16_t=1, ac_cv_have_uint16_t=0)
 AC_CHECK_TYPE(uint32_t, ac_cv_have_uint32_t=1, ac_cv_have_uint32_t=0)
 AC_CHECK_TYPE(uint64_t, ac_cv_have_uint32_t=1, ac_cv_have_uint32_t=0)
 
+AC_CHECK_LIB([glog],[openlog],[],[AC_MSG_ERROR([Please install google-gloglibrary])])
+AC_CHECK_LIB([gflags],[getenv],[],[AC_MSG_ERROR([Please install google-gflags library])])
+
 # Generic compiler characteristics.
 AC_OPENMP
 
